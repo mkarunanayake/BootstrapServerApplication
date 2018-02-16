@@ -15,10 +15,6 @@ public class RegisterMessage extends Message{
     private String password;
 
     public RegisterMessage(){super("Register");}
-    
-    public RegisterMessage(String title) {
-        super(title);
-    }
 
     public String getPassword() {
         return password;

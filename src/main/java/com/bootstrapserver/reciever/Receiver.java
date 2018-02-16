@@ -48,22 +48,20 @@ public class Receiver implements Runnable{
             if (messageValidator.validate(msg)){
                 String error = "Success";
                 RequestStatusMessage requestStatus = new RequestStatusMessage();
-                if (msg.getTitle() == "Login"){
+                if (msg.getTitle().equals("Login")){
                     requestStatus.setTitle("LoginStatus");
                     LoginMessage loginMsg= (LoginMessage)msg;
                     User user = userRepo.getUser(loginMsg.getUsername());
                     if (user == null){
                         error = "Invalid user details!";
-                    } else if (user.getPassword() != loginMsg.getPassword()){
+                    } else if (!user.getPassword().equals(loginMsg.getPassword())){
                         error = "Invalid user details!";
                     } else {
                         Peer peer = new Peer(user.getUserID(), loginMsg.getSenderAddress(), loginMsg.getSenderPort());
                         peerRepo.updatePeerInfo(peer);
                     }
                     requestStatus.setStatus(error);
-                    os.writeObject(requestStatus);
-
-                } else if (msg.getTitle() == "Register"){
+                } else if (msg.getTitle().equals("Register")){
                     RegisterMessage regMsg = (RegisterMessage) msg;
                     requestStatus.setTitle("RegisterStatus");
                     if (userRepo.getUser(regMsg.getUsername()) != null) {
@@ -74,12 +72,15 @@ public class Receiver implements Runnable{
                         userRepo.saveUser(user);
                         Peer peer = new Peer(user.getUserID(), regMsg.getSenderAddress(), regMsg.getSenderPort());
                         peerRepo.updatePeerInfo(peer);
+                        requestStatus.setUserID(user.getUserID());
+                        requestStatus.setAccountType(2);
                         requestStatus.setStatus(error);
                     }
-                    os.writeObject(requestStatus);
-                }else if (msg.getTitle() == "PWChange"){
-
+                }else if (msg.getTitle().equals("PWChange")){
+                    //implement password change logic
                 }
+                requestStatus.setTitle("InvalidMessage");
+                os.writeObject(requestStatus);
             }
             senderSocket.close();
         } catch (IOException ex) {
