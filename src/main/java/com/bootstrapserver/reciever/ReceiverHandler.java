@@ -19,13 +19,13 @@ public class ReceiverHandler implements Runnable{
 
     @Override
     public void run() {
-        ServerSocket recieverSocket;
+        ServerSocket receiverSocket;
         Socket senderSocket;
         try {
-            recieverSocket = new ServerSocket(port);
+            receiverSocket = new ServerSocket(port);
             while (true) {
                 try {
-                    senderSocket = recieverSocket.accept();
+                    senderSocket = receiverSocket.accept();
                     Thread t = new Thread(new Receiver(senderSocket));
                     t.start();
                 } catch (SQLException e) {
