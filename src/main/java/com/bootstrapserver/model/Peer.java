@@ -14,6 +14,7 @@ public class Peer {
     private String peerAddress;
     private int peerPort;
     private int userID;
+    private long lastSeen;
 
     public Peer(){
         
@@ -51,5 +52,13 @@ public class Peer {
     
     public String peerToString(){
         return Integer.toString(userID)+","+peerAddress+","+Integer.toString(peerPort);
+    }
+
+    public long getLastSeen() {
+        return lastSeen;
+    }
+
+    public void setLastSeen(long lastSeen) {
+        this.lastSeen = lastSeen;
     }
 }
