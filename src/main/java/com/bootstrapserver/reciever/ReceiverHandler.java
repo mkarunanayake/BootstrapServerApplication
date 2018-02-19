@@ -19,6 +19,7 @@ public class ReceiverHandler implements Runnable{
 
     @Override
     public void run() {
+        System.out.println("Receiver is running!");
         ServerSocket receiverSocket;
         Socket senderSocket;
         try {

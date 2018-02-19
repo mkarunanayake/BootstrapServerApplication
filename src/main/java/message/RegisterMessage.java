@@ -3,13 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.bootstrapserver.message;
+package message;
 
 /**
  *
  * @author Mevan
  */
-public class RegisterMessage extends Message{
+public class RegisterMessage extends Message implements BSMessage{
 
     private String username;
     private String password;
@@ -32,9 +32,4 @@ public class RegisterMessage extends Message{
         this.username = username;
     }
 
-    @Override
-    public String messageToString() {
-        return super.messageToString()+","+username+","+password+"\n";
-    }
-    
 }

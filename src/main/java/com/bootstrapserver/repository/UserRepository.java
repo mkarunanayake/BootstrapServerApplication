@@ -10,13 +10,14 @@ public class UserRepository {
 
     public UserRepository() {this.dbConn = new DBConnection();}
 
-    public User getUser(String username){
+    public User getUser(String uname){
         User user=null;
         Connection conn = dbConn.getConnection();
-        String statement = "SELECT * FROM user_details WHERE username="+username;
+        String statement = "SELECT * FROM user_details WHERE username = ?";
         try {
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(statement);
+            PreparedStatement stmt = conn.prepareStatement(statement);
+            stmt.setString(1, uname);
+            ResultSet rs = stmt.executeQuery();
             while (rs.next()){
                 user = new User(rs.getInt("user_id") ,rs.getString("username"), rs.getString("password"),
                         rs.getInt("access_level"));
@@ -50,14 +51,21 @@ public class UserRepository {
                 "user_id INT," +
                 "username VARCHAR(20)," +
                 "password VARCHAR (40) NOT NULL," +
-                "access_level DEFAULT 2" +
-                "CONSTRAINT check_access_level CHECK (access_level IN (1,2)))" +
+                "access_level INT DEFAULT 2," +
+                "CONSTRAINT check_access_level CHECK (access_level IN (1,2))," +
                 "PRIMARY KEY (user_id))";
         try {
             Statement stmt = conn.createStatement();
             stmt.execute(userTableStmt);
+            System.out.println("UserTable Created!");
         } catch (SQLException e) {
+            if (e.getSQLState().equals("X0Y32")) {
+                System.out.println("User Table Already Created!");
+                return;
+            }
             e.printStackTrace();
+        } finally {
+
         }
     }
 }

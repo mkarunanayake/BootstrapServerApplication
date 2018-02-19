@@ -1,4 +1,4 @@
-package com.bootstrapserver.message;
+package message;
 
 public class LogoutMessage extends Message {
     private int userID;

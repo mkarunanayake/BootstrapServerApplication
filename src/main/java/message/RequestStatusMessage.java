@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.bootstrapserver.message;
+package message;
 
 import java.util.ArrayList;
 import com.bootstrapserver.model.*;
@@ -12,8 +12,8 @@ import com.bootstrapserver.model.*;
  *
  * @author Mevan
  */
-public class RequestStatusMessage extends Message{
-    
+public class RequestStatusMessage extends Message implements BSMessage{
+
     private ArrayList<Peer> activePeers = new ArrayList<Peer>();
     private int accountType;
     private int userID;
@@ -57,22 +57,6 @@ public class RequestStatusMessage extends Message{
 
     public void setTitle(String title){
         this.title = title;
-    }
-
-    @Override
-    public String messageToString() {
-        String msg = super.messageToString();
-        msg+=String.valueOf(userID);
-        msg+=status;
-        if (status.equals("Success")) {
-            if (!(activePeers.isEmpty())) {
-                for (Peer p : activePeers) {
-                    msg += ("," + p.peerToString());
-                }
-            }
-        }
-        msg+="\n";
-        return msg;
     }
 
 }

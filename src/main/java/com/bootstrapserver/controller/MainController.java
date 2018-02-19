@@ -1,6 +1,6 @@
 package com.bootstrapserver.controller;
 
-import com.bootstrapserver.message.Message;
+import message.Message;
 import com.bootstrapserver.util.Main;
 import com.bootstrapserver.util.UIUpdater;
 import javafx.event.ActionEvent;

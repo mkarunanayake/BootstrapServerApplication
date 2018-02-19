@@ -3,18 +3,23 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.bootstrapserver.message;
-
+package message;
 /**
  *
  * @author Mevan
  */
-public class LoginMessage extends Message{
+public class LoginMessage extends Message implements BSMessage{
     
     private String username;
     private String password;
 
     public LoginMessage(){super("Login");}
+
+    public LoginMessage(String username, String password){
+        super("Login");
+        this.username=username;
+        this.password=password;
+    }
     
     public String getUsername() {
         return username;
@@ -32,8 +37,4 @@ public class LoginMessage extends Message{
         this.password = password;
     }
 
-    @Override
-    public String messageToString() {
-        return super.messageToString()+","+username+","+password+"\n";
-    }
 }

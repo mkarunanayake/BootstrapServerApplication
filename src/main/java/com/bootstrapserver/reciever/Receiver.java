@@ -5,10 +5,11 @@
  */
 package com.bootstrapserver.reciever;
 
-import com.bootstrapserver.message.LoginMessage;
-import com.bootstrapserver.message.RequestStatusMessage;
-import com.bootstrapserver.message.Message;
-import com.bootstrapserver.message.RegisterMessage;
+import jdk.nashorn.internal.ir.debug.ObjectSizeCalculator;
+import message.LoginMessage;
+import message.RequestStatusMessage;
+import message.Message;
+import message.RegisterMessage;
 import com.bootstrapserver.model.Peer;
 import com.bootstrapserver.model.User;
 import com.bootstrapserver.repository.PeerRepository;
@@ -45,10 +46,13 @@ public class Receiver implements Runnable{
             ObjectInputStream is = new ObjectInputStream(senderSocket.getInputStream());
             ObjectOutputStream os = new ObjectOutputStream(senderSocket.getOutputStream());
             Message msg = (Message) is.readObject();
+            System.out.println("Message Received");
             if (messageValidator.validate(msg)){
+                System.out.println("inside validator");
                 String error = "Success";
                 RequestStatusMessage requestStatus = new RequestStatusMessage();
                 if (msg.getTitle().equals("Login")){
+                    System.out.println("InsideLogin");
                     requestStatus.setTitle("LoginStatus");
                     LoginMessage loginMsg= (LoginMessage)msg;
                     User user = userRepo.getUser(loginMsg.getUsername());
@@ -59,6 +63,7 @@ public class Receiver implements Runnable{
                     } else {
                         Peer peer = new Peer(user.getUserID(), loginMsg.getSenderAddress(), loginMsg.getSenderPort());
                         peerRepo.updatePeerInfo(peer);
+
                     }
                     requestStatus.setStatus(error);
                 } else if (msg.getTitle().equals("Register")){
@@ -68,6 +73,7 @@ public class Receiver implements Runnable{
                         error = "Username Already Taken!";
                         requestStatus.setStatus(error);
                     }else {
+                        System.out.println("valid account");
                         User user = new User(Main.giveUserID(), regMsg.getUsername(), regMsg.getPassword(), 2 );
                         userRepo.saveUser(user);
                         Peer peer = new Peer(user.getUserID(), regMsg.getSenderAddress(), regMsg.getSenderPort());
@@ -75,12 +81,21 @@ public class Receiver implements Runnable{
                         requestStatus.setUserID(user.getUserID());
                         requestStatus.setAccountType(2);
                         requestStatus.setStatus(error);
+                        System.out.println("state written");
                     }
                 }else if (msg.getTitle().equals("PWChange")){
                     //implement password change logic
+                }else if (msg.getTitle().equals("Logout")){
+                    //implement logout logic
                 }
-                requestStatus.setTitle("InvalidMessage");
+                System.out.println(requestStatus.getTitle());
                 os.writeObject(requestStatus);
+                os.flush();
+                os.close();
+                is.close();
+                senderSocket.close();
+            } else {
+                System.out.println("invalid message");
             }
             senderSocket.close();
         } catch (IOException ex) {

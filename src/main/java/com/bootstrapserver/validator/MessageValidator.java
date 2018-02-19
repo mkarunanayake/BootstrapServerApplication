@@ -5,7 +5,7 @@
  */
 package com.bootstrapserver.validator;
 
-import com.bootstrapserver.message.Message;
+import message.Message;
 
 import java.util.ArrayList;
 
@@ -27,9 +27,12 @@ public class MessageValidator {
 
         boolean valid = true;
         if (msgTitles.contains(message.getTitle())){
+            System.out.println("true from 1");
              if (portNumberValidator(message.getSenderPort()) && portNumberValidator(message.getReceiverPort()) && ipAddressValidator(message.getReceiverAddress())
                     && ipAddressValidator(message.getSenderAddress())){
+                 System.out.println("true from 2");
                  if (!(String.valueOf(message.getTimestamp()).matches("[0-9]+"))){
+                     System.out.println("false");
                         valid = false;
                  }
              } else {
@@ -37,20 +40,18 @@ public class MessageValidator {
              }
         } else {
             valid = false;
+            System.out.println("Camehere");
         }
+        System.out.println(valid);
         return valid;
     }
 
     public boolean portNumberValidator(int port){
-        boolean valid = true;
-        try {
+        boolean valid = false;
             if ((port>1024) && (port<65536)){
-                valid = false;
+                valid = true;
             }
-        } catch (Exception e){
-            valid = false;
-            return valid;
-        }
+        System.out.println("port" + valid);
         return valid;
     }
 
@@ -59,6 +60,7 @@ public class MessageValidator {
         if (!(ipAdd.matches("[0-9.]+") && (ipAdd.length() > 0 && ipAdd.length() < 16))) {
             valid = false;
         }
+        System.out.println("ip" + valid);
         return valid;
     }
 }

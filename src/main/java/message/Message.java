@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.bootstrapserver.message;
+package message;
 
 import java.io.Serializable;
 
@@ -69,10 +69,6 @@ public abstract class Message implements Serializable{
 
     public void setSenderPort(int senderPort) {
         this.senderPort = senderPort;
-    }
-
-    public String messageToString(){
-        return title+","+String.valueOf(senderID)+","+ receiverAddress +","+Integer.toString(receiverPort)+","+senderAddress+","+Integer.toString(senderPort)+","+timestamp;
     }
 
     public void setSenderID(int senderID) {

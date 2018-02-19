@@ -1,11 +1,16 @@
 package com.bootstrapserver.util;
 
+import com.bootstrapserver.model.User;
 import com.bootstrapserver.reciever.ReceiverHandler;
+import com.bootstrapserver.repository.PeerRepository;
+import com.bootstrapserver.repository.UserRepository;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,17 +19,22 @@ import java.util.Properties;
 
 public class Main extends Application{
     private static int userID;
-    private static Properties prop = new Properties();
+
+    private static PropertiesConfiguration prop;
     private static ArrayList<UIUpdater> registrationListeners = new ArrayList<>();
     public static void main(String[] args){
-        ClassLoader loader= Thread.currentThread().getContextClassLoader();
-        InputStream stream= loader.getResourceAsStream("/properties/user.properties");
+
+        UserRepository userRepo = new UserRepository();
+        userRepo.setupUserTable();
+        PeerRepository peerRepo = new PeerRepository();
+        peerRepo.setupPeerTable();
         try {
-            prop.load(stream);
-            userID = Integer.parseInt(prop.getProperty("user_id"));
-        } catch (IOException e) {
+            prop = new PropertiesConfiguration("properties/user.properties");
+            userID = Integer.parseInt(String.valueOf(prop.getProperty("user_id")));
+        } catch (ConfigurationException e) {
             e.printStackTrace();
         }
+        System.out.println(userID);
         int port = 25025;
         if (args.length>1){
             port = Integer.parseInt(args[1]);
@@ -63,7 +73,14 @@ public class Main extends Application{
         Main.userID +=1;
         synchronized (prop){
             prop.setProperty("user_id", String.valueOf(userID));
+            try {
+                prop.save();
+                System.out.println("saved");
+            } catch (ConfigurationException e) {
+                e.printStackTrace();
+            }
         }
+        System.out.println(userID);
         return userID;
     }
 

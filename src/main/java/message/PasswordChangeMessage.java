@@ -1,4 +1,4 @@
-package com.bootstrapserver.message;
+package message;
 
 public class PasswordChangeMessage extends Message {
     private int userID;

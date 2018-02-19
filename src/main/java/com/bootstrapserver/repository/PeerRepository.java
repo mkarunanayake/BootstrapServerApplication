@@ -40,8 +40,8 @@ public class PeerRepository {
 
     public void updatePeerInfo(Peer peer){
         Connection conn = dbConn.getConnection();
-        String updateStmt = "UPDATE peer_details SET peer_address=?, peer_port=?, time_stamp=? WHERE user_id = ?";
-        String savePeerStmt = "INSERT peer_details (peer_address, peer_port, time_stamp, user_id) VALUES (?, ?, ?, ?)";
+        String updateStmt = "UPDATE peer_details SET peer_address=?, peer_port=?, last_seen=? WHERE user_id = ?";
+        String savePeerStmt = "INSERT INTO peer_details(peer_address, peer_port, last_seen, user_id) VALUES (?, ?, ?, ?)";
         try {
             PreparedStatement stmt = null;
             if (this.getPeer(peer.getUserID())!=null){
@@ -65,7 +65,7 @@ public class PeerRepository {
         int count = 0;
         Connection conn = dbConn.getConnection();
         ArrayList<Peer> peersList = new ArrayList<>();
-        String selectStmt = "SELECT * FROM peer_details ORDER BY time_stamp DESC";
+        String selectStmt = "SELECT * FROM peer_details ORDER BY last_seen DESC";
         try {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(selectStmt);
@@ -91,7 +91,7 @@ public class PeerRepository {
                 "user_id INT, " +
                 "peer_address VARCHAR(15)," +
                 "peer_port INT," +
-                "time_stamp BIGINT," +
+                "last_seen BIGINT," +
                 "PRIMARY KEY (user_id)," +
                 "FOREIGN KEY (user_id) references user_details)";
         try {
@@ -99,7 +99,12 @@ public class PeerRepository {
             stmt.execute(createStmt);
             stmt.close();
             conn.close();
+            System.out.println("Peer Table Created");
         } catch (SQLException e) {
+            if (e.getSQLState().equals("X0Y32")){
+                System.out.println("Peer Table Already created");
+                return;
+            }
             e.printStackTrace();
         }
     }
