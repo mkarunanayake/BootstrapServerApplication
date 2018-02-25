@@ -5,10 +5,13 @@ import com.bootstrapserver.reciever.ReceiverHandler;
 import com.bootstrapserver.repository.PeerRepository;
 import com.bootstrapserver.repository.UserRepository;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 
@@ -43,6 +46,7 @@ public class Main extends Application{
         Thread t = new Thread(receiverHandler);
         t.start();
 
+        launch(args);
     }
 
     public static void addRegistrationListener(UIUpdater uiUpdater){
@@ -63,14 +67,20 @@ public class Main extends Application{
     public void start(Stage primaryStage) throws Exception {
         Parent parent = FXMLLoader.load(getClass().getResource("/views/main.fxml"));
         Scene scene = new Scene(parent, 1024, 768);
-        setUserAgentStylesheet(STYLESHEET_MODENA);
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent t) {
+                Platform.exit();
+                System.exit(0);
+            }
+        });
         primaryStage.setScene(scene);
         primaryStage.setTitle("Main");
         primaryStage.show();
     }
 
     public static int giveUserID(){
-        Main.userID +=1;
+        Main.userID += 1;
         synchronized (prop){
             prop.setProperty("user_id", String.valueOf(userID));
             try {

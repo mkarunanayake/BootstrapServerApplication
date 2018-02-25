@@ -51,7 +51,7 @@ public class PeerRepository {
             }
             stmt.setString(1, peer.getPeerAddress());
             stmt.setInt(2, peer.getPeerPort());
-            stmt.setLong(3, (Long) new Date(System.currentTimeMillis()).getTime());
+            stmt.setLong(3, peer.getLastSeen());
             stmt.setInt(4, peer.getUserID());
             stmt.execute();
             stmt.close();
@@ -65,7 +65,7 @@ public class PeerRepository {
         int count = 0;
         Connection conn = dbConn.getConnection();
         ArrayList<Peer> peersList = new ArrayList<>();
-        String selectStmt = "SELECT * FROM peer_details ORDER BY last_seen DESC";
+        String selectStmt = "SELECT * FROM peer_details WHERE last_seen>0 ORDER BY last_seen DESC";
         try {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(selectStmt);
@@ -75,6 +75,7 @@ public class PeerRepository {
                 peer.setPeerPort(rs.getInt("peer_port"));
                 peer.setPeerAddress(rs.getString("peer_address"));
                 peersList.add(peer);
+                count+=1;
             }
             stmt.close();
             conn.close();

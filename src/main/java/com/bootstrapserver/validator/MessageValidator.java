@@ -23,16 +23,14 @@ public class MessageValidator {
             add("Login");
             add("Register");
             add("PWChange");
+            add("Logout");
         }};
 
         boolean valid = true;
         if (msgTitles.contains(message.getTitle())){
-            System.out.println("true from 1");
              if (portNumberValidator(message.getSenderPort()) && portNumberValidator(message.getReceiverPort()) && ipAddressValidator(message.getReceiverAddress())
                     && ipAddressValidator(message.getSenderAddress())){
-                 System.out.println("true from 2");
                  if (!(String.valueOf(message.getTimestamp()).matches("[0-9]+"))){
-                     System.out.println("false");
                         valid = false;
                  }
              } else {
@@ -40,7 +38,6 @@ public class MessageValidator {
              }
         } else {
             valid = false;
-            System.out.println("Camehere");
         }
         System.out.println(valid);
         return valid;

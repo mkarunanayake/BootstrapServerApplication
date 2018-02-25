@@ -49,10 +49,6 @@ public class Peer {
     public void setPeerPort(int peerPort) {
         this.peerPort = peerPort;
     }
-    
-    public String peerToString(){
-        return Integer.toString(userID)+","+peerAddress+","+Integer.toString(peerPort);
-    }
 
     public long getLastSeen() {
         return lastSeen;

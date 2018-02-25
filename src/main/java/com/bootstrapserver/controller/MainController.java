@@ -1,41 +1,43 @@
 package com.bootstrapserver.controller;
 
-import message.Message;
-import com.bootstrapserver.util.Main;
-import com.bootstrapserver.util.UIUpdater;
+import com.bootstrapserver.model.User;
+import com.bootstrapserver.repository.UserRepository;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.ComboBoxTableCell;
+import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class MainController implements UIUpdater, Initializable{
+import static javafx.scene.control.cell.TextFieldTableCell.forTableColumn;
+
+public class MainController implements Initializable{
 
     @FXML
-    private TableView<?> userTable;
+    private TableView<User> userTable;
 
     @FXML
-    private TableColumn<?, ?> usernameCol;
+    private TableColumn<User, Integer> userIDCol;
 
     @FXML
-    private TableColumn<?, ?> peerAddCol;
+    private TableColumn<User, String> usernameCol;
 
     @FXML
-    private TableColumn<?, ?> peerPortCol;
+    private TableColumn<User, Integer> accessLevelCol;
 
     @FXML
-    private TableColumn<?, ?> accessLvlCol;
+    private MenuButton btnSettings;
 
     @FXML
-    private TableColumn<?, ?> lastSeenCol;
+    private MenuItem changePassword;
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        Main.addRegistrationListener(this);
-    }
+    @FXML
+    private MenuItem btnLogout;
 
     @FXML
     void updateAccessLevel(ActionEvent event) {
@@ -43,8 +45,34 @@ public class MainController implements UIUpdater, Initializable{
     }
 
     @Override
-    public void updateUI(Message message) {
+    public void initialize(URL location, ResourceBundle resources) {
+       /* changePassword.setOnAction(MouseEvent -> {
+
+        } );
+
+        btnLogout.setOnAction(MouseEvent -> {
+
+        });*/
+
+        UserRepository userRepository = new UserRepository();
+        ObservableList<User> users = FXCollections.observableArrayList(userRepository.getUsers());
+
+        usernameCol.setCellValueFactory(new PropertyValueFactory<>("username"));
+
+
+        userIDCol.setCellValueFactory(new PropertyValueFactory<>("userID"));
+
+        accessLevelCol.setCellValueFactory(new PropertyValueFactory<>("accessLevel"));
+        accessLevelCol.setCellFactory(ComboBoxTableCell.forTableColumn((ObservableList) FXCollections.observableArrayList(1, 2)));
+        accessLevelCol.setOnEditCommit(
+                (TableColumn.CellEditEvent<User, Integer> t) -> {
+                    User user = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                    user.setAccessLevel(t.getNewValue());
+                    userRepository.updateUser(user);
+                });
+
+        userTable.setItems(users);
+
 
     }
-
 }

@@ -5,11 +5,7 @@
  */
 package com.bootstrapserver.reciever;
 
-import jdk.nashorn.internal.ir.debug.ObjectSizeCalculator;
-import message.LoginMessage;
-import message.RequestStatusMessage;
-import message.Message;
-import message.RegisterMessage;
+import message.*;
 import com.bootstrapserver.model.Peer;
 import com.bootstrapserver.model.User;
 import com.bootstrapserver.repository.PeerRepository;
@@ -20,6 +16,7 @@ import com.bootstrapserver.validator.MessageValidator;
 import java.io.*;
 import java.net.Socket;
 import java.sql.SQLException;
+import java.util.Date;
 
 /**
  *
@@ -46,7 +43,6 @@ public class Receiver implements Runnable{
             ObjectInputStream is = new ObjectInputStream(senderSocket.getInputStream());
             ObjectOutputStream os = new ObjectOutputStream(senderSocket.getOutputStream());
             Message msg = (Message) is.readObject();
-            System.out.println("Message Received");
             if (messageValidator.validate(msg)){
                 System.out.println("inside validator");
                 String error = "Success";
@@ -62,8 +58,9 @@ public class Receiver implements Runnable{
                         error = "Invalid user details!";
                     } else {
                         Peer peer = new Peer(user.getUserID(), loginMsg.getSenderAddress(), loginMsg.getSenderPort());
+                        peer.setLastSeen(new Date(System.currentTimeMillis()).getTime());
                         peerRepo.updatePeerInfo(peer);
-
+                        requestStatus.setUserID(user.getUserID());
                     }
                     requestStatus.setStatus(error);
                 } else if (msg.getTitle().equals("Register")){
@@ -86,7 +83,14 @@ public class Receiver implements Runnable{
                 }else if (msg.getTitle().equals("PWChange")){
                     //implement password change logic
                 }else if (msg.getTitle().equals("Logout")){
-                    //implement logout logic
+                    requestStatus.setTitle("LogoutSuccess");
+                    LogoutMessage logoutMessage = (LogoutMessage) msg;
+                    Peer peer = peerRepo.getPeer(logoutMessage.getUserID());
+                    if (peer != null){
+                        peer.setLastSeen(0);
+                        peerRepo.updatePeerInfo(peer);
+                        System.out.println("Logged Out");
+                    }
                 }
                 System.out.println(requestStatus.getTitle());
                 os.writeObject(requestStatus);

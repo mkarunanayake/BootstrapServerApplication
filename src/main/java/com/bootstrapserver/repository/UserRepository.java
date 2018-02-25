@@ -4,6 +4,7 @@ import com.bootstrapserver.model.User;
 import com.bootstrapserver.util.DBConnection;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 public class UserRepository {
     DBConnection dbConn;
@@ -45,6 +46,37 @@ public class UserRepository {
         }
     }
 
+    public ArrayList<User> getUsers(){
+        ArrayList<User> users =new ArrayList<>();
+        Connection connection = dbConn.getConnection();
+        String getUsersStmt = "SELECT * FROM user_details";
+        try {
+            Statement stmt = connection.createStatement();
+            ResultSet usersSet = stmt.executeQuery(getUsersStmt);
+            while (usersSet.next()){
+                users.add(new User(usersSet.getInt("user_id"), usersSet.getString("username"), usersSet.getString("password"), usersSet.getInt("access_level")));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return users;
+    }
+
+    public void updateUser(User user){
+        Connection connection = dbConn.getConnection();
+        String updateUser = "UPDATE user_details SET access_level=?, password = ? WHERE username=?";
+        try {
+            PreparedStatement preparedUpdateUserStmt= connection.prepareStatement(updateUser);
+            preparedUpdateUserStmt.setInt(1, user.getAccessLevel());
+            preparedUpdateUserStmt.setString(2, user.getPassword());
+            preparedUpdateUserStmt.setString(3, user.getUsername());
+            preparedUpdateUserStmt.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void setupUserTable(){
         Connection conn = dbConn.getConnection();
         String userTableStmt = "CREATE TABLE user_details(" +
@@ -64,8 +96,6 @@ public class UserRepository {
                 return;
             }
             e.printStackTrace();
-        } finally {
-
         }
     }
 }
