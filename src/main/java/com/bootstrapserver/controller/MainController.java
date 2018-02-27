@@ -2,21 +2,25 @@ package com.bootstrapserver.controller;
 
 import com.bootstrapserver.model.User;
 import com.bootstrapserver.repository.UserRepository;
+import com.bootstrapserver.util.Main;
+import com.bootstrapserver.util.UIUpdater;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static javafx.scene.control.cell.TextFieldTableCell.forTableColumn;
-
-public class MainController implements Initializable{
+public class MainController implements Initializable, UIUpdater {
 
     @FXML
     private TableView<User> userTable;
@@ -39,6 +43,8 @@ public class MainController implements Initializable{
     @FXML
     private MenuItem btnLogout;
 
+    private ObservableList<User> users;
+
     @FXML
     void updateAccessLevel(ActionEvent event) {
 
@@ -54,8 +60,10 @@ public class MainController implements Initializable{
 
         });*/
 
+        Main.setRegistrationListener(this);
+
         UserRepository userRepository = new UserRepository();
-        ObservableList<User> users = FXCollections.observableArrayList(userRepository.getUsers());
+        users = FXCollections.observableArrayList(userRepository.getUsers());
 
         usernameCol.setCellValueFactory(new PropertyValueFactory<>("username"));
 
@@ -74,5 +82,15 @@ public class MainController implements Initializable{
         userTable.setItems(users);
 
 
+    }
+
+    @Override
+    public void updateUI(User user) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                users.add(user);
+            }
+        });
     }
 }

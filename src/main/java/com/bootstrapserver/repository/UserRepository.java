@@ -9,18 +9,20 @@ import java.util.ArrayList;
 public class UserRepository {
     DBConnection dbConn;
 
-    public UserRepository() {this.dbConn = new DBConnection();}
+    public UserRepository() {
+        this.dbConn = new DBConnection();
+    }
 
-    public User getUser(String uname){
-        User user=null;
+    public User getUser(String uname) {
+        User user = null;
         Connection conn = dbConn.getConnection();
         String statement = "SELECT * FROM user_details WHERE username = ?";
         try {
             PreparedStatement stmt = conn.prepareStatement(statement);
             stmt.setString(1, uname);
             ResultSet rs = stmt.executeQuery();
-            while (rs.next()){
-                user = new User(rs.getInt("user_id") ,rs.getString("username"), rs.getString("password"),
+            while (rs.next()) {
+                user = new User(rs.getInt("user_id"), rs.getString("username"), rs.getString("password"),
                         rs.getInt("access_level"));
             }
             stmt.close();
@@ -31,7 +33,7 @@ public class UserRepository {
         return user;
     }
 
-    public void saveUser(User user){
+    public void saveUser(User user) {
         Connection conn = dbConn.getConnection();
         String userDetailsStmt = "INSERT INTO user_details (user_id, username, password) VALUES (?, ?, ?)";
         try {
@@ -46,14 +48,14 @@ public class UserRepository {
         }
     }
 
-    public ArrayList<User> getUsers(){
-        ArrayList<User> users =new ArrayList<>();
+    public ArrayList<User> getUsers() {
+        ArrayList<User> users = new ArrayList<>();
         Connection connection = dbConn.getConnection();
         String getUsersStmt = "SELECT * FROM user_details";
         try {
             Statement stmt = connection.createStatement();
             ResultSet usersSet = stmt.executeQuery(getUsersStmt);
-            while (usersSet.next()){
+            while (usersSet.next()) {
                 users.add(new User(usersSet.getInt("user_id"), usersSet.getString("username"), usersSet.getString("password"), usersSet.getInt("access_level")));
             }
 
@@ -63,11 +65,11 @@ public class UserRepository {
         return users;
     }
 
-    public void updateUser(User user){
+    public void updateUser(User user) {
         Connection connection = dbConn.getConnection();
         String updateUser = "UPDATE user_details SET access_level=?, password = ? WHERE username=?";
         try {
-            PreparedStatement preparedUpdateUserStmt= connection.prepareStatement(updateUser);
+            PreparedStatement preparedUpdateUserStmt = connection.prepareStatement(updateUser);
             preparedUpdateUserStmt.setInt(1, user.getAccessLevel());
             preparedUpdateUserStmt.setString(2, user.getPassword());
             preparedUpdateUserStmt.setString(3, user.getUsername());
@@ -77,7 +79,7 @@ public class UserRepository {
         }
     }
 
-    public void setupUserTable(){
+    public void setupUserTable() {
         Connection conn = dbConn.getConnection();
         String userTableStmt = "CREATE TABLE user_details(" +
                 "user_id INT," +

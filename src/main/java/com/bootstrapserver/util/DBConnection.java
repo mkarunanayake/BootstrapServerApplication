@@ -11,28 +11,25 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
- *
  * @author Mevan
  */
 public class DBConnection {
     Properties prop = new Properties();
-    
-    public DBConnection(){
-        ClassLoader loader= Thread.currentThread().getContextClassLoader();
-        InputStream stream= loader.getResourceAsStream("properties/db.properties");
+
+    public DBConnection() {
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        InputStream stream = loader.getResourceAsStream("properties/db.properties");
         try {
             prop.load(stream);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    
-    public Connection getConnection(){
-        Connection conn = null;        
+
+    public Connection getConnection() {
+        Connection conn = null;
         try {
             Class.forName(prop.getProperty("db.driver"));
             conn = DriverManager.getConnection(prop.getProperty("db.url"),
@@ -44,5 +41,5 @@ public class DBConnection {
         }
         return conn;
     }
-    
+
 }

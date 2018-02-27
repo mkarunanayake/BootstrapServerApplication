@@ -10,16 +10,15 @@ import message.Message;
 import java.util.ArrayList;
 
 /**
- *
  * @author Mevan
  */
 public class MessageValidator {
-    
-    public MessageValidator(){
+
+    public MessageValidator() {
     }
-    
-    public boolean validate(Message message){
-        ArrayList<String> msgTitles = new ArrayList<String>(){{
+
+    public boolean validate(Message message) {
+        ArrayList<String> msgTitles = new ArrayList<String>() {{
             add("Login");
             add("Register");
             add("PWChange");
@@ -27,15 +26,15 @@ public class MessageValidator {
         }};
 
         boolean valid = true;
-        if (msgTitles.contains(message.getTitle())){
-             if (portNumberValidator(message.getSenderPort()) && portNumberValidator(message.getReceiverPort()) && ipAddressValidator(message.getReceiverAddress())
-                    && ipAddressValidator(message.getSenderAddress())){
-                 if (!(String.valueOf(message.getTimestamp()).matches("[0-9]+"))){
-                        valid = false;
-                 }
-             } else {
-                 valid = false;
-             }
+        if (msgTitles.contains(message.getTitle())) {
+            if (portNumberValidator(message.getSenderPort()) && portNumberValidator(message.getReceiverPort())
+                    && ipAddressValidator(message.getReceiverAddress()) && ipAddressValidator(message.getSenderAddress())) {
+                if (!(String.valueOf(message.getTimestamp()).matches("[0-9]+"))) {
+                    valid = false;
+                }
+            } else {
+                valid = false;
+            }
         } else {
             valid = false;
         }
@@ -43,11 +42,11 @@ public class MessageValidator {
         return valid;
     }
 
-    public boolean portNumberValidator(int port){
+    public boolean portNumberValidator(int port) {
         boolean valid = false;
-            if ((port>1024) && (port<65536)){
-                valid = true;
-            }
+        if ((port > 1024) && (port < 65536)) {
+            valid = true;
+        }
         System.out.println("port" + valid);
         return valid;
     }

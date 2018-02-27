@@ -2,17 +2,18 @@ package com.bootstrapserver.repository;
 
 import com.bootstrapserver.model.Peer;
 import com.bootstrapserver.util.DBConnection;
+
 import java.sql.*;
 import java.util.ArrayList;
 
 public class PeerRepository {
     DBConnection dbConn;
 
-    public PeerRepository(){
+    public PeerRepository() {
         this.dbConn = new DBConnection();
     }
 
-    public Peer getPeer(int userID){
+    public Peer getPeer(int userID) {
         Connection conn = dbConn.getConnection();
         Peer peer = null;
         String selectStmt = "SELECT * FROM peer_details NATURAL JOIN user_details WHERE user_id = ?";
@@ -20,7 +21,7 @@ public class PeerRepository {
             PreparedStatement psmt = conn.prepareStatement(selectStmt);
             psmt.setInt(1, userID);
             ResultSet rs = psmt.executeQuery();
-            while(rs.next()){
+            while (rs.next()) {
                 peer = new Peer();
                 peer.setPeerAddress(rs.getString("peer_address"));
                 peer.setPeerPort(rs.getInt("peer_port"));
@@ -38,13 +39,13 @@ public class PeerRepository {
         return peer;
     }
 
-    public void updatePeerInfo(Peer peer){
+    public void updatePeerInfo(Peer peer) {
         Connection conn = dbConn.getConnection();
         String updateStmt = "UPDATE peer_details SET peer_address=?, peer_port=?, last_seen=? WHERE user_id = ?";
         String savePeerStmt = "INSERT INTO peer_details(peer_address, peer_port, last_seen, user_id) VALUES (?, ?, ?, ?)";
         try {
             PreparedStatement stmt = null;
-            if (this.getPeer(peer.getUserID())!=null){
+            if (this.getPeer(peer.getUserID()) != null) {
                 stmt = conn.prepareStatement(updateStmt);
             } else {
                 stmt = conn.prepareStatement(savePeerStmt);
@@ -61,7 +62,7 @@ public class PeerRepository {
         }
     }
 
-    public ArrayList<Peer> getPeerList(int size){
+    public ArrayList<Peer> getPeerList(int size) {
         int count = 0;
         Connection conn = dbConn.getConnection();
         ArrayList<Peer> peersList = new ArrayList<>();
@@ -69,13 +70,13 @@ public class PeerRepository {
         try {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(selectStmt);
-            while (rs.next() && count<size){
+            while (rs.next() && count < size) {
                 Peer peer = new Peer();
                 peer.setUserID(rs.getInt("user_id"));
                 peer.setPeerPort(rs.getInt("peer_port"));
                 peer.setPeerAddress(rs.getString("peer_address"));
                 peersList.add(peer);
-                count+=1;
+                count += 1;
             }
             stmt.close();
             conn.close();
@@ -86,7 +87,7 @@ public class PeerRepository {
         return peersList;
     }
 
-    public void setupPeerTable(){
+    public void setupPeerTable() {
         Connection conn = dbConn.getConnection();
         String createStmt = "CREATE TABLE peer_details(" +
                 "user_id INT, " +
@@ -102,7 +103,7 @@ public class PeerRepository {
             conn.close();
             System.out.println("Peer Table Created");
         } catch (SQLException e) {
-            if (e.getSQLState().equals("X0Y32")){
+            if (e.getSQLState().equals("X0Y32")) {
                 System.out.println("Peer Table Already created");
                 return;
             }

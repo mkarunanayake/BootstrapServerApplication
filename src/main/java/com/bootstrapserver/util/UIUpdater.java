@@ -1,7 +1,7 @@
 package com.bootstrapserver.util;
 
-import message.Message;
+import com.bootstrapserver.model.User;
 
 public interface UIUpdater {
-    public void updateUI(Message message);
+    public void updateUI(User user);
 }
