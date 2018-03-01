@@ -1,4 +1,4 @@
-package com.bootstrapserver.reciever;
+package messenger;
 
 import java.io.IOException;
 import java.net.ServerSocket;

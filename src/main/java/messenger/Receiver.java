@@ -3,9 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.bootstrapserver.reciever;
+package messenger;
 
-import com.bootstrapserver.model.Peer;
 import com.bootstrapserver.model.User;
 import com.bootstrapserver.repository.PeerRepository;
 import com.bootstrapserver.repository.UserRepository;
@@ -62,6 +61,7 @@ public class Receiver implements Runnable {
                         peer.setLastSeen(new Date(System.currentTimeMillis()).getTime());
                         peerRepo.updatePeerInfo(peer);
                         requestStatus.setUserID(user.getUserID());
+                        requestStatus.setActivePeers(getOnlinePeerList());
                     }
                     requestStatus.setStatus(error);
                 } else if (msg.getTitle().equals("Register")) {
@@ -81,6 +81,7 @@ public class Receiver implements Runnable {
                         requestStatus.setUserID(user.getUserID());
                         requestStatus.setAccountType(2);
                         requestStatus.setStatus(error);
+                        requestStatus.setActivePeers(getOnlinePeerList());
                     }
                 } else if (msg.getTitle().equals("PWChange")) {
                     //implement password change logic
@@ -94,6 +95,7 @@ public class Receiver implements Runnable {
                     }
                     Main.decreaseLoggedInUsers();
                 } else if (msg.getTitle().equals("HeartBeat")) {
+                    requestStatus.setTitle("");
                     HeartBeatMessage heartBeatMessage = (HeartBeatMessage) msg;
                     Peer peer = new Peer(heartBeatMessage.getSenderID(), heartBeatMessage.getSenderAddress()
                             , heartBeatMessage.getSenderPort());

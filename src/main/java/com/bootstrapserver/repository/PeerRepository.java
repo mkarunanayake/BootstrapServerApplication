@@ -1,6 +1,6 @@
 package com.bootstrapserver.repository;
 
-import com.bootstrapserver.model.Peer;
+import messenger.Peer;
 import com.bootstrapserver.util.DBConnection;
 
 import java.sql.*;

@@ -6,7 +6,8 @@
 package message;
 
 import java.util.ArrayList;
-import com.bootstrapserver.model.*;
+
+import messenger.Peer;
 
 /**
  *

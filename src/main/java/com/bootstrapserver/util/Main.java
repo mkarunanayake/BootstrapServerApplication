@@ -1,6 +1,5 @@
 package com.bootstrapserver.util;
 
-import com.bootstrapserver.reciever.ReceiverHandler;
 import com.bootstrapserver.repository.PeerRepository;
 import com.bootstrapserver.repository.UserRepository;
 import javafx.application.Application;
@@ -11,8 +10,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import messenger.ReceiverHandler;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
+
+import java.net.*;
+import java.util.Enumeration;
 
 public class Main extends Application {
     private static int userID;
@@ -42,7 +45,7 @@ public class Main extends Application {
         Thread t = new Thread(receiverHandler);
         t.start();
 
-        //System.out.println(giveUserID());
+        getLocalIPAddress();
 
         launch(args);
     }
@@ -77,7 +80,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent parent = FXMLLoader.load(getClass().getResource("/views/main.fxml"));
+        Parent parent = FXMLLoader.load(getClass().getResource("/views/login.fxml"));
         Scene scene = new Scene(parent, 1024, 768);
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
@@ -87,7 +90,7 @@ public class Main extends Application {
             }
         });
         primaryStage.setScene(scene);
-        primaryStage.setTitle("Main");
+        primaryStage.setTitle("Login");
         primaryStage.show();
     }
 
@@ -103,6 +106,42 @@ public class Main extends Application {
             }
         }
         return userID;
+    }
+
+    public static String getLocalIPAddress() {
+        InetAddress inetAddress = null;
+        try {
+            for (
+                    final Enumeration<NetworkInterface> interfaces =
+                    NetworkInterface.getNetworkInterfaces();
+                    interfaces.hasMoreElements();
+                    ) {
+                final NetworkInterface cur = interfaces.nextElement();
+
+                if (cur.isLoopback()) {
+                    continue;
+                }
+
+                for (final InterfaceAddress addr : cur.getInterfaceAddresses()) {
+                    final InetAddress inet_addr = addr.getAddress();
+
+                    if (!(inet_addr instanceof Inet4Address)) {
+                        continue;
+                    }
+                    inetAddress = inet_addr;
+                    System.out.println(
+                            "  address: " + inet_addr.getHostAddress() +
+                                    "/" + addr.getNetworkPrefixLength()
+                    );
+                }
+            }
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+        if (inetAddress != null) {
+            return inetAddress.getHostAddress();
+        }
+        return "No network Connection!";
     }
 
 }
