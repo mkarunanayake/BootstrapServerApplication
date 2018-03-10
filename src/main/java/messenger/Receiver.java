@@ -30,7 +30,7 @@ public class Receiver implements Runnable {
     private UserRepository userRepo;
     private PeerRepository peerRepo;
 
-    public Receiver(Socket senderSocket) throws SQLException {
+    Receiver(Socket senderSocket) throws SQLException {
         this.senderSocket = senderSocket;
         messageValidator = new MessageValidator();
         userRepo = new UserRepository();
@@ -95,7 +95,7 @@ public class Receiver implements Runnable {
                     }
                     Main.decreaseLoggedInUsers();
                 } else if (msg.getTitle().equals("HeartBeat")) {
-                    requestStatus.setTitle("");
+                    requestStatus.setTitle("HeartBeatSuccess");
                     HeartBeatMessage heartBeatMessage = (HeartBeatMessage) msg;
                     Peer peer = new Peer(heartBeatMessage.getSenderID(), heartBeatMessage.getSenderAddress()
                             , heartBeatMessage.getSenderPort());
@@ -106,7 +106,6 @@ public class Receiver implements Runnable {
                 os.flush();
                 os.close();
                 is.close();
-                senderSocket.close();
             } else {
                 System.out.println("invalid message");
             }
@@ -118,14 +117,14 @@ public class Receiver implements Runnable {
         }
     }
 
-    public ArrayList<Peer> getOnlinePeerList() {
+    private ArrayList<Peer> getOnlinePeerList() {
         ArrayList<Peer> peers = new ArrayList<>();
         int loggedInUsers = Main.getLoggedInUsers();
         if (loggedInUsers > 30) {
-            return peerRepo.getPeerList(loggedInUsers/6);
+            return peerRepo.getPeerList(loggedInUsers / 6);
         } else if (loggedInUsers > 10) {
-            return peerRepo.getPeerList(loggedInUsers/5);
-        } else if (loggedInUsers > 5){
+            return peerRepo.getPeerList(loggedInUsers / 5);
+        } else if (loggedInUsers > 5) {
             return peerRepo.getPeerList(3);
         } else {
             return peerRepo.getPeerList(loggedInUsers);
