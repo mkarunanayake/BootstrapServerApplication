@@ -32,7 +32,7 @@ public class Receiver implements Runnable {
 
     Receiver(Socket senderSocket) throws SQLException {
         this.senderSocket = senderSocket;
-        messageValidator = new MessageValidator();
+        messageValidator = MessageValidator.getMessageValidator();
         userRepo = new UserRepository();
         peerRepo = new PeerRepository();
     }
@@ -84,6 +84,7 @@ public class Receiver implements Runnable {
                         requestStatus.setActivePeers(getOnlinePeerList());
                     }
                 } else if (msg.getTitle().equals("PWChange")) {
+                    requestStatus.setTitle("PWChangeStatus");
                     //implement password change logic
                 } else if (msg.getTitle().equals("Logout")) {
                     requestStatus.setTitle("LogoutSuccess");

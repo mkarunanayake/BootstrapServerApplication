@@ -14,7 +14,18 @@ import java.util.ArrayList;
  */
 public class MessageValidator {
 
-    public MessageValidator() {
+    private static MessageValidator messageValidator;
+
+    private MessageValidator() {
+    }
+
+    public static MessageValidator getMessageValidator() {
+        if (messageValidator == null) {
+            synchronized (MessageValidator.class) {
+                messageValidator = new MessageValidator();
+            }
+        }
+        return messageValidator;
     }
 
     public boolean validate(Message message) {

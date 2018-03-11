@@ -1,7 +1,7 @@
 package com.bootstrapserver.repository;
 
-import messenger.Peer;
 import com.bootstrapserver.util.DBConnection;
+import messenger.Peer;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ public class PeerRepository {
     DBConnection dbConn;
 
     public PeerRepository() {
-        this.dbConn = new DBConnection();
+        this.dbConn = DBConnection.getDbConnection();
     }
 
     public Peer getPeer(int userID) {

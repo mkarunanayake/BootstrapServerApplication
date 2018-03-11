@@ -16,9 +16,12 @@ import java.util.Properties;
  * @author Mevan
  */
 public class DBConnection {
-    Properties prop = new Properties();
 
-    public DBConnection() {
+    private static DBConnection dbConnection;
+
+    private Properties prop = new Properties();
+
+    private DBConnection() {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         InputStream stream = loader.getResourceAsStream("properties/db.properties");
         try {
@@ -26,6 +29,16 @@ public class DBConnection {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static DBConnection getDbConnection() {
+        if (dbConnection == null) {
+            synchronized (DBConnection.class) {
+                dbConnection = new DBConnection();
+            }
+        }
+
+        return dbConnection;
     }
 
     public Connection getConnection() {

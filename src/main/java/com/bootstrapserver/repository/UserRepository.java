@@ -10,7 +10,7 @@ public class UserRepository {
     DBConnection dbConn;
 
     public UserRepository() {
-        this.dbConn = new DBConnection();
+        this.dbConn = DBConnection.getDbConnection();
     }
 
     public User getUser(String uname) {
