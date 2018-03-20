@@ -10,16 +10,15 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- *
  * @author Mevan
  */
-public class ReceiverHandler implements Runnable{
+public class ReceiverHandler implements Runnable {
 
     private int port;
     private ExecutorService receiverService;
 
-    public ReceiverHandler(int port){
-        this.port=port;
+    public ReceiverHandler(int port) {
+        this.port = port;
         receiverService = new ThreadPoolExecutor(20, 100, 1, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>());
     }
 

@@ -35,9 +35,9 @@ public class LoginController {
         String username = txtUsername.getText().trim();
         String password = PasswordEncrypter.SHA1(txtPassword.getText().trim());
 
-        if (!username.equals(SystemUser.getUsername())){
+        if (!username.equals(SystemUser.getUsername())) {
             statusLabel.setText("Invalid Username!");
-        } else if (!password.equals(SystemUser.getPassword())){
+        } else if (!password.equals(SystemUser.getPassword())) {
             statusLabel.setText("Invalid Password!");
         } else {
             Stage stage = (Stage) btnLogin.getScene().getWindow();

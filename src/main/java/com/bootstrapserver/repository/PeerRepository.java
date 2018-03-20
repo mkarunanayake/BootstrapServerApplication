@@ -8,9 +8,19 @@ import java.util.ArrayList;
 
 public class PeerRepository {
     DBConnection dbConn;
+    private static PeerRepository peerRepository;
 
-    public PeerRepository() {
+    private PeerRepository() {
         this.dbConn = DBConnection.getDbConnection();
+    }
+
+    public static PeerRepository getPeerRepository() {
+        if (peerRepository == null) {
+            synchronized (PeerRepository.class) {
+                peerRepository = new PeerRepository();
+            }
+        }
+        return peerRepository;
     }
 
     public Peer getPeer(int userID) {
@@ -62,14 +72,15 @@ public class PeerRepository {
         }
     }
 
-    public ArrayList<Peer> getPeerList(int size) {
+    public ArrayList<Peer> getPeerList(int size, int userID) {
         int count = 0;
         Connection conn = dbConn.getConnection();
         ArrayList<Peer> peersList = new ArrayList<>();
-        String selectStmt = "SELECT * FROM peer_details WHERE last_seen>0 ORDER BY last_seen DESC";
+        String selectStmt = "SELECT * FROM peer_details WHERE last_seen>0 AND (user_id NOT IN (?)) ORDER BY last_seen DESC";
         try {
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(selectStmt);
+            PreparedStatement stmt = conn.prepareStatement(selectStmt);
+            stmt.setInt(1, userID);
+            ResultSet rs = stmt.executeQuery();
             while (rs.next() && count < size) {
                 Peer peer = new Peer();
                 peer.setUserID(rs.getInt("user_id"));
@@ -83,7 +94,6 @@ public class PeerRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return peersList;
     }
 

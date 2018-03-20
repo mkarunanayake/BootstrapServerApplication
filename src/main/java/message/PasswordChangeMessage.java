@@ -5,7 +5,7 @@ public class PasswordChangeMessage extends Message {
     private String olderPassword;
     private String newPassword;
 
-    public PasswordChangeMessage(){
+    public PasswordChangeMessage() {
         super("PWChange");
     }
 

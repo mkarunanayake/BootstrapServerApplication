@@ -9,6 +9,7 @@ import com.bootstrapserver.model.User;
 import com.bootstrapserver.repository.PeerRepository;
 import com.bootstrapserver.repository.UserRepository;
 import com.bootstrapserver.util.Main;
+import com.bootstrapserver.util.UIUpdater;
 import com.bootstrapserver.validator.MessageValidator;
 import message.*;
 
@@ -33,8 +34,8 @@ public class Receiver implements Runnable {
     Receiver(Socket senderSocket) throws SQLException {
         this.senderSocket = senderSocket;
         messageValidator = MessageValidator.getMessageValidator();
-        userRepo = new UserRepository();
-        peerRepo = new PeerRepository();
+        userRepo = UserRepository.getUserRepository();
+        peerRepo = PeerRepository.getPeerRepository();
     }
 
 
@@ -61,7 +62,7 @@ public class Receiver implements Runnable {
                         peer.setLastSeen(new Date(System.currentTimeMillis()).getTime());
                         peerRepo.updatePeerInfo(peer);
                         requestStatus.setUserID(user.getUserID());
-                        requestStatus.setActivePeers(getOnlinePeerList());
+                        requestStatus.setActivePeers(getOnlinePeerList(user.getUserID()));
                     }
                     requestStatus.setStatus(error);
                 } else if (msg.getTitle().equals("Register")) {
@@ -74,14 +75,17 @@ public class Receiver implements Runnable {
                         Main.increaseLoggedInUsers();
                         User user = new User(Main.giveUserID(), regMsg.getUsername(), regMsg.getPassword(), 2);
                         userRepo.saveUser(user);
-                        Main.getRegistrationListener().updateUI(user);
+                        UIUpdater regListener = Main.getRegistrationListener();
+                        if (regListener != null) {
+                            regListener.updateUI(user);
+                        }
                         Peer peer = new Peer(user.getUserID(), regMsg.getSenderAddress(), regMsg.getSenderPort());
                         peer.setLastSeen(new Date(System.currentTimeMillis()).getTime());
                         peerRepo.updatePeerInfo(peer);
                         requestStatus.setUserID(user.getUserID());
                         requestStatus.setAccountType(2);
                         requestStatus.setStatus(error);
-                        requestStatus.setActivePeers(getOnlinePeerList());
+                        requestStatus.setActivePeers(getOnlinePeerList(user.getUserID()));
                     }
                 } else if (msg.getTitle().equals("PWChange")) {
                     requestStatus.setTitle("PWChangeStatus");
@@ -118,17 +122,16 @@ public class Receiver implements Runnable {
         }
     }
 
-    private ArrayList<Peer> getOnlinePeerList() {
-        ArrayList<Peer> peers = new ArrayList<>();
+    private ArrayList<Peer> getOnlinePeerList(int userID) {
         int loggedInUsers = Main.getLoggedInUsers();
         if (loggedInUsers > 30) {
-            return peerRepo.getPeerList(loggedInUsers / 6);
+            return peerRepo.getPeerList(loggedInUsers / 6, userID);
         } else if (loggedInUsers > 10) {
-            return peerRepo.getPeerList(loggedInUsers / 5);
+            return peerRepo.getPeerList(loggedInUsers / 3, userID);
         } else if (loggedInUsers > 5) {
-            return peerRepo.getPeerList(3);
+            return peerRepo.getPeerList(3, userID);
         } else {
-            return peerRepo.getPeerList(loggedInUsers);
+            return peerRepo.getPeerList(loggedInUsers, userID);
         }
     }
 }

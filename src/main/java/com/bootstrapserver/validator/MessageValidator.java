@@ -34,6 +34,7 @@ public class MessageValidator {
             add("Register");
             add("PWChange");
             add("Logout");
+            add("HeartBeatMessage");
         }};
 
         boolean valid = true;

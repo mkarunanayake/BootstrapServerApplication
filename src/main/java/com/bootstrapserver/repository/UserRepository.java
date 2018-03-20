@@ -7,10 +7,21 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class UserRepository {
-    DBConnection dbConn;
+    private static UserRepository userRepository;
 
-    public UserRepository() {
+    private DBConnection dbConn;
+
+    private UserRepository() {
         this.dbConn = DBConnection.getDbConnection();
+    }
+
+    public static UserRepository getUserRepository() {
+        if (userRepository == null) {
+            synchronized (UserRepository.class) {
+                userRepository = new UserRepository();
+            }
+        }
+        return userRepository;
     }
 
     public User getUser(String uname) {

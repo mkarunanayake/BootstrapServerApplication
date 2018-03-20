@@ -3,7 +3,6 @@ package com.bootstrapserver.util;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 
 public class PasswordEncrypter {
 
@@ -18,7 +17,7 @@ public class PasswordEncrypter {
                 else
                     buf.append((char) ('a' + (halfbyte - 10)));
                 halfbyte = data[i] & 0x0F;
-            } while(two_halfs++ < 1);
+            } while (two_halfs++ < 1);
         }
         return buf.toString();
     }

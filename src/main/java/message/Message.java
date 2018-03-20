@@ -5,13 +5,14 @@
  */
 package message;
 
+import messenger.ServerHandler;
+
 import java.io.Serializable;
 
 /**
- *
  * @author Mevan
  */
-public abstract class Message implements Serializable{
+public abstract class Message implements Serializable, Cloneable {
 
     protected String title;
     private int senderID;
@@ -21,11 +22,12 @@ public abstract class Message implements Serializable{
     private int senderPort;
     private long timestamp;
 
-    public Message(String title){
+    public Message(String title) {
         this.title = title;
+        setSenderPort(ServerHandler.getPort());
+        setSenderAddress(ServerHandler.getIpAddress());
+        setSenderID(ServerHandler.getUserID());
     }
-
-    public Message(){}
 
     public long getTimestamp() {
         return timestamp;
@@ -71,11 +73,15 @@ public abstract class Message implements Serializable{
         this.senderPort = senderPort;
     }
 
+    public int getSenderID() {
+        return senderID;
+    }
+
     public void setSenderID(int senderID) {
         this.senderID = senderID;
     }
 
-    public int getSenderID() {
-        return senderID;
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }

@@ -1,9 +1,9 @@
 package message;
 
-public class LogoutMessage extends Message implements BSMessage{
+public class LogoutMessage extends Message implements BSMessage {
     private int userID;
 
-    public LogoutMessage(int userID){
+    public LogoutMessage(int userID) {
         super("Logout");
         this.userID = userID;
     }

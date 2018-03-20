@@ -6,17 +6,19 @@ public class User {
     private int accessLevel;
     private int userID;
 
-    public User(){    }
+    public User() {
+    }
 
-    public User(String username){ this.username = username;}
+    public User(String username) {
+        this.username = username;
+    }
 
-    public User(int userID, String username, String password, int accessLevel){
-        this.username=username;
-        this.password=password;
+    public User(int userID, String username, String password, int accessLevel) {
+        this.username = username;
+        this.password = password;
         this.accessLevel = accessLevel;
         this.userID = userID;
     }
-
 
 
     public String getUsername() {

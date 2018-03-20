@@ -5,23 +5,23 @@
  */
 package message;
 
-import java.util.ArrayList;
-
 import messenger.Peer;
 
+import java.util.ArrayList;
+
 /**
- *
  * @author Mevan
  */
-public class RequestStatusMessage extends Message implements BSMessage{
+public class RequestStatusMessage extends Message implements BSMessage {
 
     private ArrayList<Peer> activePeers = new ArrayList<Peer>();
     private int accountType;
     private int userID;
     private String status;
+    private long lastSeen;
 
-    public RequestStatusMessage(){
-        super();
+    public RequestStatusMessage() {
+        super("");
     }
 
     public String getStatus() {
@@ -56,8 +56,15 @@ public class RequestStatusMessage extends Message implements BSMessage{
         this.userID = userID;
     }
 
-    public void setTitle(String title){
+    public void setTitle(String title) {
         this.title = title;
     }
 
+    public long getLastSeen() {
+        return lastSeen;
+    }
+
+    public void setLastSeen(long lastSeen) {
+        this.lastSeen = lastSeen;
+    }
 }

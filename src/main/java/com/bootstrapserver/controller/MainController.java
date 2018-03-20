@@ -62,7 +62,7 @@ public class MainController implements Initializable, UIUpdater {
 
         Main.setRegistrationListener(this);
 
-        UserRepository userRepository = new UserRepository();
+        UserRepository userRepository = UserRepository.getUserRepository();
         users = FXCollections.observableArrayList(userRepository.getUsers());
 
         usernameCol.setCellValueFactory(new PropertyValueFactory<>("username"));

@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.MenuButton?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.layout.AnchorPane?>
-
-<AnchorPane prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bootstrapserver.controller.MainController">
-   <children>
-      <TableView fx:id="userTable" editable="true" layoutX="243.0" layoutY="132.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="100.0">
-        <columns>
-          <TableColumn fx:id="userIDCol" prefWidth="237.0" text="UserID" />
-          <TableColumn fx:id="usernameCol" minWidth="4.0" prefWidth="314.0" text="Username" />
-            <TableColumn fx:id="accessLevelCol" onEditCommit="#updateAccessLevel" prefWidth="272.0" text="Access Level" />
-        </columns>
-      </TableView>
-      <MenuButton fx:id="btnSettings" layoutX="849.0" layoutY="31.0" mnemonicParsing="false" text="Settings">
-        <items>
-          <MenuItem fx:id="changePassword" mnemonicParsing="false" text="Change Password" />
-          <MenuItem fx:id="btnLogout" mnemonicParsing="false" text="Logout" />
-        </items>
-      </MenuButton>
-   </children>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="768.0" prefWidth="1024.0"
+            xmlns="http://javafx.com/javafx/8.0.141" fx:controller="com.bootstrapserver.controller.MainController">
+    <children>
+        <TableView fx:id="userTable" editable="true" layoutX="243.0" layoutY="132.0" prefHeight="200.0"
+                   prefWidth="200.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="100.0"
+                   AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="100.0">
+            <columns>
+                <TableColumn fx:id="userIDCol" prefWidth="237.0" text="UserID"/>
+                <TableColumn fx:id="usernameCol" minWidth="4.0" prefWidth="314.0" text="Username"/>
+                <TableColumn fx:id="accessLevelCol" onEditCommit="#updateAccessLevel" prefWidth="272.0"
+                             text="Access Level"/>
+            </columns>
+        </TableView>
+        <MenuButton fx:id="btnSettings" layoutX="849.0" layoutY="31.0" mnemonicParsing="false" text="Settings">
+            <items>
+                <MenuItem fx:id="changePassword" mnemonicParsing="false" text="Change Password"/>
+                <MenuItem fx:id="btnLogout" mnemonicParsing="false" text="Logout"/>
+            </items>
+        </MenuButton>
+    </children>
 </AnchorPane>

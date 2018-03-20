@@ -4,23 +4,25 @@
  * and open the template in the editor.
  */
 package message;
+
 /**
- *
  * @author Mevan
  */
-public class LoginMessage extends Message implements BSMessage{
-    
+public class LoginMessage extends Message implements BSMessage {
+
     private String username;
     private String password;
 
-    public LoginMessage(){super("Login");}
-
-    public LoginMessage(String username, String password){
+    public LoginMessage() {
         super("Login");
-        this.username=username;
-        this.password=password;
     }
-    
+
+    public LoginMessage(String username, String password) {
+        super("Login");
+        this.username = username;
+        this.password = password;
+    }
+
     public String getUsername() {
         return username;
     }
