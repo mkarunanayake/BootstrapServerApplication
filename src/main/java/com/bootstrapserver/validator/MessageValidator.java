@@ -50,7 +50,6 @@ public class MessageValidator {
         } else {
             valid = false;
         }
-        System.out.println(valid);
         return valid;
     }
 
@@ -59,7 +58,6 @@ public class MessageValidator {
         if ((port > 1024) && (port < 65536)) {
             valid = true;
         }
-        System.out.println("port" + valid);
         return valid;
     }
 
@@ -68,7 +66,6 @@ public class MessageValidator {
         if (!(ipAdd.matches("[0-9.]+") && (ipAdd.length() > 0 && ipAdd.length() < 16))) {
             valid = false;
         }
-        System.out.println("ip" + valid);
         return valid;
     }
 }

@@ -10,6 +10,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import messenger.OnlinePeerHandler;
 import messenger.ReceiverHandler;
 import messenger.ServerHandler;
 import org.apache.commons.configuration.ConfigurationException;
@@ -20,7 +21,6 @@ public class Main extends Application {
 
     private static PropertiesConfiguration prop;
     private static UIUpdater registrationListener;
-    private static Integer loggedInUsers = 0;
 
     public static void main(String[] args) {
 
@@ -45,27 +45,9 @@ public class Main extends Application {
         t.start();
 
         ServerHandler.getLocalIPAddress();
+        OnlinePeerHandler.startHandler();
 
         launch(args);
-    }
-
-
-    public static Integer getLoggedInUsers() {
-        return loggedInUsers;
-    }
-
-    public static void increaseLoggedInUsers() {
-        synchronized (Main.loggedInUsers) {
-            Main.loggedInUsers += 1;
-        }
-    }
-
-    public static void decreaseLoggedInUsers() {
-        synchronized (Main.loggedInUsers) {
-            if (Main.loggedInUsers > 0) {
-                Main.loggedInUsers -= 1;
-            }
-        }
     }
 
 

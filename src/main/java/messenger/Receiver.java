@@ -18,8 +18,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * @author Mevan
@@ -57,12 +55,12 @@ public class Receiver implements Runnable {
                     } else if (!user.getPassword().equals(loginMsg.getPassword())) {
                         error = "Invalid user details!";
                     } else {
-                        Main.increaseLoggedInUsers();
                         Peer peer = new Peer(user.getUserID(), loginMsg.getSenderAddress(), loginMsg.getSenderPort());
-                        peer.setLastSeen(new Date(System.currentTimeMillis()).getTime());
-                        peerRepo.updatePeerInfo(peer);
+                        peer.setLastSeen(loginMsg.getTimestamp());
                         requestStatus.setUserID(user.getUserID());
-                        requestStatus.setActivePeers(getOnlinePeerList(user.getUserID()));
+                        requestStatus.setAccountType(user.getAccessLevel());
+                        requestStatus.setLastSeen(peerRepo.getPeer(user.getUserID()).getLastSeen());
+                        requestStatus.setActivePeers(OnlinePeerHandler.getOnlinePeers(user.getUserID()));
                     }
                     requestStatus.setStatus(error);
                 } else if (msg.getTitle().equals("Register")) {
@@ -70,9 +68,7 @@ public class Receiver implements Runnable {
                     requestStatus.setTitle("RegisterStatus");
                     if (userRepo.getUser(regMsg.getUsername()) != null) {
                         error = "Username Already Taken!";
-                        requestStatus.setStatus(error);
                     } else {
-                        Main.increaseLoggedInUsers();
                         User user = new User(Main.giveUserID(), regMsg.getUsername(), regMsg.getPassword(), 2);
                         userRepo.saveUser(user);
                         UIUpdater regListener = Main.getRegistrationListener();
@@ -80,32 +76,30 @@ public class Receiver implements Runnable {
                             regListener.updateUI(user);
                         }
                         Peer peer = new Peer(user.getUserID(), regMsg.getSenderAddress(), regMsg.getSenderPort());
-                        peer.setLastSeen(new Date(System.currentTimeMillis()).getTime());
+                        peer.setLastSeen(0);
                         peerRepo.updatePeerInfo(peer);
                         requestStatus.setUserID(user.getUserID());
                         requestStatus.setAccountType(2);
-                        requestStatus.setStatus(error);
-                        requestStatus.setActivePeers(getOnlinePeerList(user.getUserID()));
+                        requestStatus.setLastSeen(0);
+                        requestStatus.setActivePeers(OnlinePeerHandler.getOnlinePeers(user.getUserID()));
                     }
+                    requestStatus.setStatus(error);
                 } else if (msg.getTitle().equals("PWChange")) {
                     requestStatus.setTitle("PWChangeStatus");
                     //implement password change logic
                 } else if (msg.getTitle().equals("Logout")) {
                     requestStatus.setTitle("LogoutSuccess");
                     LogoutMessage logoutMessage = (LogoutMessage) msg;
-                    Peer peer = peerRepo.getPeer(logoutMessage.getUserID());
-                    if (peer != null) {
-                        peer.setLastSeen(0);
-                        peerRepo.updatePeerInfo(peer);
-                    }
-                    Main.decreaseLoggedInUsers();
-                } else if (msg.getTitle().equals("HeartBeat")) {
+                    Peer peer = new Peer(logoutMessage.getUserID(), logoutMessage.getSenderAddress(), logoutMessage.getSenderPort());
+                    peer.setLastSeen(logoutMessage.getTimestamp());
+                    OnlinePeerHandler.userLogout(peer);
+                } else if (msg.getTitle().equals("HeartBeatMessage")) {
                     requestStatus.setTitle("HeartBeatSuccess");
                     HeartBeatMessage heartBeatMessage = (HeartBeatMessage) msg;
                     Peer peer = new Peer(heartBeatMessage.getSenderID(), heartBeatMessage.getSenderAddress()
                             , heartBeatMessage.getSenderPort());
                     peer.setLastSeen(heartBeatMessage.getTimestamp());
-                    peerRepo.updatePeerInfo(peer);
+                    OnlinePeerHandler.heartbeatRecieved(peer);
                 }
                 os.writeObject(requestStatus);
                 os.flush();
@@ -119,19 +113,6 @@ public class Receiver implements Runnable {
             ex.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
-        }
-    }
-
-    private ArrayList<Peer> getOnlinePeerList(int userID) {
-        int loggedInUsers = Main.getLoggedInUsers();
-        if (loggedInUsers > 30) {
-            return peerRepo.getPeerList(loggedInUsers / 6, userID);
-        } else if (loggedInUsers > 10) {
-            return peerRepo.getPeerList(loggedInUsers / 3, userID);
-        } else if (loggedInUsers > 5) {
-            return peerRepo.getPeerList(3, userID);
-        } else {
-            return peerRepo.getPeerList(loggedInUsers, userID);
         }
     }
 }
