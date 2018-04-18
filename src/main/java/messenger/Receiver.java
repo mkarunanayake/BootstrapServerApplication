@@ -18,6 +18,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.sql.SQLException;
+import java.util.Date;
 
 /**
  * @author Mevan
@@ -55,11 +56,10 @@ public class Receiver implements Runnable {
                     } else if (!user.getPassword().equals(loginMsg.getPassword())) {
                         error = "Invalid user details!";
                     } else {
-                        Peer peer = new Peer(user.getUserID(), loginMsg.getSenderAddress(), loginMsg.getSenderPort());
-                        peer.setLastSeen(loginMsg.getTimestamp());
                         requestStatus.setUserID(user.getUserID());
                         requestStatus.setAccountType(user.getAccessLevel());
                         requestStatus.setLastSeen(peerRepo.getPeer(user.getUserID()).getLastSeen());
+                        System.out.println(new Date(peerRepo.getPeer(user.getUserID()).getLastSeen()));
                         requestStatus.setActivePeers(OnlinePeerHandler.getOnlinePeers(user.getUserID()));
                     }
                     requestStatus.setStatus(error);
@@ -85,8 +85,23 @@ public class Receiver implements Runnable {
                     }
                     requestStatus.setStatus(error);
                 } else if (msg.getTitle().equals("PWChange")) {
+                    System.out.println("PW Change message received");
                     requestStatus.setTitle("PWChangeStatus");
-                    //implement password change logic
+                    PasswordChangeMessage passwordChangeMessage = (PasswordChangeMessage) msg;
+                    User user = userRepo.getUser(passwordChangeMessage.getUserID());
+                    if (passwordChangeMessage.getSenderID() == passwordChangeMessage.getUserID()) {
+                        if (user.getPassword().equals(passwordChangeMessage.getOldPassword())) {
+                            user.setPassword(passwordChangeMessage.getNewPassword());
+                            userRepo.updateUser(user);
+                            requestStatus.setStatus("PWChangeSuccess");
+                            System.out.println("PW Change Success");
+                        } else {
+                            requestStatus.setStatus("Invalid old password!");
+                            System.out.println("Invalid old password");
+                        }
+                    } else {
+
+                    }
                 } else if (msg.getTitle().equals("Logout")) {
                     requestStatus.setTitle("LogoutSuccess");
                     LogoutMessage logoutMessage = (LogoutMessage) msg;
@@ -96,10 +111,12 @@ public class Receiver implements Runnable {
                 } else if (msg.getTitle().equals("HeartBeatMessage")) {
                     requestStatus.setTitle("HeartBeatSuccess");
                     HeartBeatMessage heartBeatMessage = (HeartBeatMessage) msg;
-                    Peer peer = new Peer(heartBeatMessage.getSenderID(), heartBeatMessage.getSenderAddress()
-                            , heartBeatMessage.getSenderPort());
-                    peer.setLastSeen(heartBeatMessage.getTimestamp());
-                    OnlinePeerHandler.heartbeatRecieved(peer);
+                    if (peerRepo.getPeer(msg.getSenderID()) != null) {
+                        Peer peer = new Peer(heartBeatMessage.getSenderID(), heartBeatMessage.getSenderAddress()
+                                , heartBeatMessage.getSenderPort());
+                        peer.setLastSeen(heartBeatMessage.getTimestamp());
+                        OnlinePeerHandler.heartbeatRecieved(peer);
+                    }
                 }
                 os.writeObject(requestStatus);
                 os.flush();

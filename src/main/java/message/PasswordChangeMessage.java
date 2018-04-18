@@ -1,28 +1,21 @@
 package message;
 
-public class PasswordChangeMessage extends Message {
-    private int userID;
-    private String olderPassword;
+public class PasswordChangeMessage extends Message implements BSMessage {
+
+    private String oldPassword;
     private String newPassword;
+    private int userID;
 
     public PasswordChangeMessage() {
         super("PWChange");
     }
 
-    public int getUserID() {
-        return userID;
+    public String getOldPassword() {
+        return oldPassword;
     }
 
-    public void setUserID(int userID) {
-        this.userID = userID;
-    }
-
-    public String getOlderPassword() {
-        return olderPassword;
-    }
-
-    public void setOlderPassword(String olderPassword) {
-        this.olderPassword = olderPassword;
+    public void setOldPassword(String oldPassword) {
+        this.oldPassword = oldPassword;
     }
 
     public String getNewPassword() {
@@ -31,5 +24,13 @@ public class PasswordChangeMessage extends Message {
 
     public void setNewPassword(String newPassword) {
         this.newPassword = newPassword;
+    }
+
+    public int getUserID() {
+        return userID;
+    }
+
+    public void setUserID(int userID) {
+        this.userID = userID;
     }
 }

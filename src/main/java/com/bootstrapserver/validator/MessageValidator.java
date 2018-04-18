@@ -43,6 +43,8 @@ public class MessageValidator {
                     && ipAddressValidator(message.getReceiverAddress()) && ipAddressValidator(message.getSenderAddress())) {
                 if (!(String.valueOf(message.getTimestamp()).matches("[0-9]+"))) {
                     valid = false;
+                } else if (!(message.getReceiverID() == 1)) {
+                    valid = false;
                 }
             } else {
                 valid = false;

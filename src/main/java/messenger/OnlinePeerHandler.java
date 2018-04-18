@@ -22,13 +22,12 @@ public class OnlinePeerHandler {
             @Override
             public void run() {
                 while (true) {
-                    System.out.println("onlinehandler running");
                     if (!onlinePeers.isEmpty()) {
                         onlinePeersRWLock.writeLock().lock();
                         ArrayList<Peer> peers = new ArrayList<>(onlinePeers.values());
                         long currentTime = new Date(System.currentTimeMillis()).getTime();
                         for (Peer peer : peers) {
-                            if ((currentTime - peer.getLastSeen()) > 120000) {
+                            if ((currentTime - peer.getLastSeen()) > 1100) {
                                 peerRepository.updatePeerInfo(peer);
                                 onlinePeers.remove(peer.getUserID());
                                 System.out.println("Heartbeat failure " + peer.getUserID());
@@ -37,7 +36,7 @@ public class OnlinePeerHandler {
                         onlinePeersRWLock.writeLock().unlock();
                     }
                     try {
-                        Thread.sleep(150000);
+                        Thread.sleep(1100);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -67,7 +66,6 @@ public class OnlinePeerHandler {
     }
 
     public static void heartbeatRecieved(Peer peer) {
-        System.out.println("Heartbeat received " + peer.getUserID());
         onlinePeersRWLock.writeLock().lock();
         if (onlinePeers.containsKey(peer.getUserID())) {
             onlinePeers.replace(peer.getUserID(), peer);
@@ -85,6 +83,7 @@ public class OnlinePeerHandler {
             System.out.println("Peer removed");
         }
         onlinePeersRWLock.writeLock().unlock();
+        System.out.println(new Date(peer.getLastSeen()));
         peerRepository.updatePeerInfo(peer);
         System.out.println("Repo updated with logout");
     }

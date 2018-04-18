@@ -36,6 +36,7 @@ public class PeerRepository {
                 peer.setPeerAddress(rs.getString("peer_address"));
                 peer.setPeerPort(rs.getInt("peer_port"));
                 peer.setUserID(rs.getInt("user_id"));
+                peer.setLastSeen(rs.getLong("last_seen"));
             }
             psmt.close();
         } catch (SQLException e) {
@@ -57,8 +58,10 @@ public class PeerRepository {
             PreparedStatement stmt = null;
             if (this.getPeer(peer.getUserID()) != null) {
                 stmt = conn.prepareStatement(updateStmt);
+                System.out.println("Updated");
             } else {
                 stmt = conn.prepareStatement(savePeerStmt);
+                System.out.println("Created");
             }
             stmt.setString(1, peer.getPeerAddress());
             stmt.setInt(2, peer.getPeerPort());

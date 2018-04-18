@@ -67,7 +67,6 @@ public class MainController implements Initializable, UIUpdater {
 
         usernameCol.setCellValueFactory(new PropertyValueFactory<>("username"));
 
-
         userIDCol.setCellValueFactory(new PropertyValueFactory<>("userID"));
 
         accessLevelCol.setCellValueFactory(new PropertyValueFactory<>("accessLevel"));
@@ -78,10 +77,7 @@ public class MainController implements Initializable, UIUpdater {
                     user.setAccessLevel(t.getNewValue());
                     userRepository.updateUser(user);
                 });
-
         userTable.setItems(users);
-
-
     }
 
     @Override

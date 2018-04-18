@@ -44,6 +44,26 @@ public class UserRepository {
         return user;
     }
 
+    public User getUser(int userID) {
+        User user = null;
+        Connection connection = dbConn.getConnection();
+        String statement = "SELECT * FROM user_details WHERE user_id = ?";
+        try {
+            PreparedStatement stmt = connection.prepareStatement(statement);
+            stmt.setInt(1, userID);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                user = new User(rs.getInt("user_id"), rs.getString("username"), rs.getString("password"),
+                        rs.getInt("access_level"));
+            }
+            stmt.close();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
+
     public void saveUser(User user) {
         Connection conn = dbConn.getConnection();
         String userDetailsStmt = "INSERT INTO user_details (user_id, username, password) VALUES (?, ?, ?)";

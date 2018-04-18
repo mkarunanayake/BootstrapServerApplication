@@ -21,6 +21,7 @@ public abstract class Message implements Serializable, Cloneable {
     private String senderAddress;
     private int senderPort;
     private long timestamp;
+    private int receiverID;
 
     public Message(String title) {
         this.title = title;
@@ -83,5 +84,13 @@ public abstract class Message implements Serializable, Cloneable {
 
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
+    }
+
+    public int getReceiverID() {
+        return receiverID;
+    }
+
+    public void setReceiverID(int receiverID) {
+        this.receiverID = receiverID;
     }
 }
