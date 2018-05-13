@@ -1,6 +1,7 @@
 package com.bootstrapserver.util;
 
-import com.bootstrapserver.repository.PeerRepository;
+import com.bootstrapserver.repository.SystemUserRepository;
+import com.bootstrapserver.repository.TableRepository;
 import com.bootstrapserver.repository.UserRepository;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -13,40 +14,32 @@ import javafx.stage.WindowEvent;
 import messenger.OnlinePeerHandler;
 import messenger.ReceiverHandler;
 import messenger.ServerHandler;
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
+
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 
 public class Main extends Application {
     private static int userID;
 
-    private static PropertiesConfiguration prop;
     private static UIUpdater registrationListener;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws UnsupportedEncodingException, NoSuchAlgorithmException {
 
-        UserRepository userRepo = UserRepository.getUserRepository();
-        userRepo.setupUserTable();
-        PeerRepository peerRepo = PeerRepository.getPeerRepository();
-        peerRepo.setupPeerTable();
+        TableRepository.createTables();
+        Main.userID = UserRepository.getUserRepository().getLastUserID();
+        SystemUserRepository.getSystemUserRepository().getSystemUser();
+        System.out.println(Main.userID);
 
-        try {
-            prop = new PropertiesConfiguration("properties/user.properties");
-            userID = Integer.parseInt(String.valueOf(prop.getProperty("user_id")));
-        } catch (ConfigurationException e) {
-            e.printStackTrace();
-        }
         int port = 25025;
         if (args.length > 1) {
             port = Integer.parseInt(args[1]);
         }
         ServerHandler.setPort(port);
+        ServerHandler.getLocalIPAddress();
         ReceiverHandler receiverHandler = new ReceiverHandler(port);
         Thread t = new Thread(receiverHandler);
         t.start();
-
-        ServerHandler.getLocalIPAddress();
         OnlinePeerHandler.startHandler();
-
         launch(args);
     }
 
@@ -61,15 +54,6 @@ public class Main extends Application {
 
     public static int giveUserID() {
         Main.userID += 1;
-        synchronized (prop) {
-            prop.setProperty("user_id", String.valueOf(userID));
-            try {
-                prop.save();
-                System.out.println("saved");
-            } catch (ConfigurationException e) {
-                e.printStackTrace();
-            }
-        }
         return userID;
     }
 

@@ -28,7 +28,7 @@ public class ReceiverHandler implements Runnable {
         ServerSocket receiverSocket;
         Socket senderSocket;
         try {
-            receiverSocket = new ServerSocket(port);
+            receiverSocket = new ServerSocket(port, 100);
             while (true) {
                 try {
                     senderSocket = receiverSocket.accept();

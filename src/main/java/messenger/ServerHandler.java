@@ -5,7 +5,7 @@ import java.util.Enumeration;
 
 public class ServerHandler {
 
-    private static String ipAddress;
+    private static InetAddress ipAddress;
     private static int port;
     private static int userID = 1;
 
@@ -13,16 +13,13 @@ public class ServerHandler {
         InetAddress inetAddress = null;
         try {
             for (
-                    final Enumeration<NetworkInterface> interfaces =
-                    NetworkInterface.getNetworkInterfaces();
+                    final Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
                     interfaces.hasMoreElements();
                     ) {
                 final NetworkInterface cur = interfaces.nextElement();
-
                 if (cur.isLoopback()) {
                     continue;
                 }
-
                 for (final InterfaceAddress addr : cur.getInterfaceAddresses()) {
                     final InetAddress inet_addr = addr.getAddress();
 
@@ -34,7 +31,8 @@ public class ServerHandler {
                             "  address: " + inet_addr.getHostAddress() +
                                     "/" + addr.getNetworkPrefixLength()
                     );
-                    ipAddress = inet_addr.getHostAddress();
+                    ipAddress = inet_addr;
+                    break;
                 }
             }
         } catch (SocketException e) {
@@ -54,12 +52,8 @@ public class ServerHandler {
         ServerHandler.port = port;
     }
 
-    public static String getIpAddress() {
+    public static InetAddress getIpAddress() {
         return ipAddress;
-    }
-
-    public static void setIpAddress(String ipAddress) {
-        ServerHandler.ipAddress = ipAddress;
     }
 
     public static int getUserID() {

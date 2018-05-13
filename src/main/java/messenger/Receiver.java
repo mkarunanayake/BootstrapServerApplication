@@ -55,7 +55,10 @@ public class Receiver implements Runnable {
                         error = "Invalid user details!";
                     } else if (!user.getPassword().equals(loginMsg.getPassword())) {
                         error = "Invalid user details!";
+                    } else if (OnlinePeerHandler.checkLogin(user.getUserID())) {
+                        error = "User already logged in";
                     } else {
+                        OnlinePeerHandler.login(user);
                         requestStatus.setUserID(user.getUserID());
                         requestStatus.setAccountType(user.getAccessLevel());
                         requestStatus.setLastSeen(peerRepo.getPeer(user.getUserID()).getLastSeen());
@@ -109,13 +112,16 @@ public class Receiver implements Runnable {
                     peer.setLastSeen(logoutMessage.getTimestamp());
                     OnlinePeerHandler.userLogout(peer);
                 } else if (msg.getTitle().equals("HeartBeatMessage")) {
-                    requestStatus.setTitle("HeartBeatSuccess");
+                    requestStatus.setTitle("HeartBeatStatus");
                     HeartBeatMessage heartBeatMessage = (HeartBeatMessage) msg;
-                    if (peerRepo.getPeer(msg.getSenderID()) != null) {
+                    if (OnlinePeerHandler.checkLogin(msg.getSenderID())) {
                         Peer peer = new Peer(heartBeatMessage.getSenderID(), heartBeatMessage.getSenderAddress()
                                 , heartBeatMessage.getSenderPort());
-                        peer.setLastSeen(heartBeatMessage.getTimestamp());
+                        peer.setLastSeen(new Date(System.currentTimeMillis()).getTime());
                         OnlinePeerHandler.heartbeatRecieved(peer);
+                        requestStatus.setStatus("Success");
+                    } else {
+                        requestStatus.setStatus("Not Logged In");
                     }
                 }
                 os.writeObject(requestStatus);

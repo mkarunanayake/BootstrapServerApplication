@@ -2,8 +2,8 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="768.0" prefWidth="1024.0"
-            xmlns="http://javafx.com/javafx/8.0.141" fx:controller="com.bootstrapserver.controller.MainController">
+<AnchorPane prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8.0.141"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bootstrapserver.controller.MainController">
     <children>
         <TableView fx:id="userTable" editable="true" layoutX="243.0" layoutY="132.0" prefHeight="200.0"
                    prefWidth="200.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="100.0"
@@ -21,5 +21,6 @@
                 <MenuItem fx:id="btnLogout" mnemonicParsing="false" text="Logout"/>
             </items>
         </MenuButton>
+        <Label fx:id="statusLabel" layoutX="100.0" layoutY="70.0" prefHeight="17.0" prefWidth="600.0"/>
     </children>
 </AnchorPane>

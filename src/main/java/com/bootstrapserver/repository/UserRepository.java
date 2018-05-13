@@ -110,25 +110,19 @@ public class UserRepository {
         }
     }
 
-    public void setupUserTable() {
-        Connection conn = dbConn.getConnection();
-        String userTableStmt = "CREATE TABLE user_details(" +
-                "user_id INT," +
-                "username VARCHAR(20)," +
-                "password VARCHAR (40) NOT NULL," +
-                "access_level INT DEFAULT 2," +
-                "CONSTRAINT check_access_level CHECK (access_level IN (1,2))," +
-                "PRIMARY KEY (user_id))";
+    public int getLastUserID() {
+        int id = 101346;
+        Connection connection = dbConn.getConnection();
+        String getStmt = "SELECT user_id FROM user_details ORDER BY user_id DESC FETCH FIRST 1 ROWS ONLY";
         try {
-            Statement stmt = conn.createStatement();
-            stmt.execute(userTableStmt);
-            System.out.println("UserTable Created!");
-        } catch (SQLException e) {
-            if (e.getSQLState().equals("X0Y32")) {
-                System.out.println("User Table Already Created!");
-                return;
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery(getStmt);
+            while (rs.next()) {
+                id = rs.getInt("user_id");
             }
+        } catch (SQLException e) {
             e.printStackTrace();
         }
+        return id;
     }
 }

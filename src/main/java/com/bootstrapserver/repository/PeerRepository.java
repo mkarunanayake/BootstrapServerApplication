@@ -3,7 +3,10 @@ package com.bootstrapserver.repository;
 import com.bootstrapserver.util.DBConnection;
 import messenger.Peer;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class PeerRepository {
@@ -98,29 +101,5 @@ public class PeerRepository {
             e.printStackTrace();
         }
         return peersList;
-    }
-
-    public void setupPeerTable() {
-        Connection conn = dbConn.getConnection();
-        String createStmt = "CREATE TABLE peer_details(" +
-                "user_id INT, " +
-                "peer_address VARCHAR(15)," +
-                "peer_port INT," +
-                "last_seen BIGINT," +
-                "PRIMARY KEY (user_id)," +
-                "FOREIGN KEY (user_id) references user_details)";
-        try {
-            Statement stmt = conn.createStatement();
-            stmt.execute(createStmt);
-            stmt.close();
-            conn.close();
-            System.out.println("Peer Table Created");
-        } catch (SQLException e) {
-            if (e.getSQLState().equals("X0Y32")) {
-                System.out.println("Peer Table Already created");
-                return;
-            }
-            e.printStackTrace();
-        }
     }
 }

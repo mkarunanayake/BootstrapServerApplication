@@ -26,7 +26,7 @@ public abstract class Message implements Serializable, Cloneable {
     public Message(String title) {
         this.title = title;
         setSenderPort(ServerHandler.getPort());
-        setSenderAddress(ServerHandler.getIpAddress());
+        setSenderAddress(ServerHandler.getIpAddress().getHostAddress());
         setSenderID(ServerHandler.getUserID());
     }
 
