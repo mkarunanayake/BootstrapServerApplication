@@ -74,6 +74,7 @@ public class Receiver implements Runnable {
                     } else {
                         User user = new User(Main.giveUserID(), regMsg.getUsername(), regMsg.getPassword(), 2);
                         userRepo.saveUser(user);
+                        OnlinePeerHandler.login(user);
                         UIUpdater regListener = Main.getRegistrationListener();
                         if (regListener != null) {
                             regListener.updateUI(user);
@@ -118,7 +119,7 @@ public class Receiver implements Runnable {
                         Peer peer = new Peer(heartBeatMessage.getSenderID(), heartBeatMessage.getSenderAddress()
                                 , heartBeatMessage.getSenderPort());
                         peer.setLastSeen(new Date(System.currentTimeMillis()).getTime());
-                        OnlinePeerHandler.heartbeatRecieved(peer);
+                        OnlinePeerHandler.heartbeatReceived(peer);
                         requestStatus.setStatus("Success");
                     } else {
                         requestStatus.setStatus("Not Logged In");

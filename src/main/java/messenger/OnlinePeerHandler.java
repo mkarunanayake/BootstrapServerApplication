@@ -92,7 +92,7 @@ public class OnlinePeerHandler {
         return peers;
     }
 
-    public static void heartbeatRecieved(Peer peer) {
+    public static void heartbeatReceived(Peer peer) {
         onlinePeersRWLock.writeLock().lock();
         if (onlinePeers.containsKey(peer.getUserID())) {
             onlinePeers.replace(peer.getUserID(), peer);
