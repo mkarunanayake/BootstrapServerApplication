@@ -1,0 +1,6 @@
+.label {
+    -fx-background-color: transparent;
+    -fx-text-fill: red;
+    -fx-border-color: cornflowerblue;
+    -fx-border-radius: 5pt;
+}

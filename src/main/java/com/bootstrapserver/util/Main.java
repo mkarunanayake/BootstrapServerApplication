@@ -28,7 +28,6 @@ public class Main extends Application {
         TableRepository.createTables();
         Main.userID = UserRepository.getUserRepository().getLastUserID();
         SystemUserRepository.getSystemUserRepository().getSystemUser();
-        System.out.println(Main.userID);
 
         int port = 25025;
         if (args.length > 1) {

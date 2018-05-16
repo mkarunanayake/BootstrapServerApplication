@@ -22,6 +22,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import messenger.ServerHandler;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -65,6 +66,7 @@ public class MainController implements Initializable, UIUpdater {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        statusLabel.setText("BS running on: " + ServerHandler.getIpAddress().getHostAddress() + "/" + ServerHandler.getPort());
         changePassword.setOnAction(MouseEvent -> {
             Dialog<String> changePasswordDialog = new Dialog<>();
             changePasswordDialog.setTitle("Change Password");
