@@ -66,6 +66,7 @@ public class MainController implements Initializable, UIUpdater {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        statusLabel.setVisible(true);
         statusLabel.setText("BS running on: " + ServerHandler.getIpAddress().getHostAddress() + "/" + ServerHandler.getPort());
         changePassword.setOnAction(MouseEvent -> {
             Dialog<String> changePasswordDialog = new Dialog<>();

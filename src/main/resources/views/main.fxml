@@ -18,7 +18,8 @@
             </columns>
         </TableView>
         <MenuButton fx:id="btnSettings" layoutX="849.0" layoutY="31.0" mnemonicParsing="false"
-                    styleClass="my-drop-down-menu" stylesheets="@../css/button.css" text="Settings">
+                    style="-fx-text-fill: white;" styleClass="my-drop-down-menu" stylesheets="@../css/button.css"
+                    text="Settings">
             <items>
                 <MenuItem fx:id="changePassword" mnemonicParsing="false" text="Change Password">
                     <styleClass>
@@ -31,6 +32,6 @@
             </items>
         </MenuButton>
         <Label fx:id="statusLabel" alignment="CENTER" layoutX="292.0" layoutY="67.0" prefHeight="17.0" prefWidth="441.0"
-               stylesheets="@../css/warninglabel.css"/>
+               stylesheets="@../css/warninglabel.css" visible="false"/>
     </children>
 </AnchorPane>

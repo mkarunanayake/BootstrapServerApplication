@@ -55,6 +55,7 @@ public class LoginController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        statusLabel.setVisible(true);
         statusLabel.setText("BS running on: " + ServerHandler.getLocalIPAddress() + "/" + ServerHandler.getPort());
     }
 }

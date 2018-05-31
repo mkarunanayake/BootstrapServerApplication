@@ -3,9 +3,7 @@
     <CLASSES>
       <root url="jar://$MAVEN_REPOSITORY$/org/junit/junit-commons/5.0.0-ALPHA/junit-commons-5.0.0-ALPHA.jar!/" />
     </CLASSES>
-    <JAVADOC>
-      <root url="jar://$MAVEN_REPOSITORY$/org/junit/junit-commons/5.0.0-ALPHA/junit-commons-5.0.0-ALPHA-javadoc.jar!/" />
-    </JAVADOC>
+    <JAVADOC />
     <SOURCES>
       <root url="jar://$MAVEN_REPOSITORY$/org/junit/junit-commons/5.0.0-ALPHA/junit-commons-5.0.0-ALPHA-sources.jar!/" />
     </SOURCES>
